@@ -33,7 +33,7 @@
 - java/ru/productstar/mockito/service/OrderService.java - класс для объекта сервиса по работе с заказами
 - java/ru/productstar/mockito/service/WarehouseService.java - класс для объекта сервиса по работе со складами
 
-- java/ru/productstar/mockito/ProductNotFoundException.java - объектисключения "товар не найден" . Используется в сервисе по работе с заказами .
+- java/ru/productstar/mockito/ProductNotFoundException.java - объектисключения "товар не найден". Используется в сервисе по работе с заказами.
 #### Тесты 
 - ru/productstar/mockito/repository/CustomerRepositoryTest.java - тест класса для объекта репозитария для покупателей
 - ru/productstar/mockito/repository/ProductRepositoryTest.java - тест класса для объекта репозитария для товаров
@@ -43,6 +43,12 @@
 - ru/productstar/mockito/service/CustomerServiceTest.java - тест класса для объекта сервиса по работе с покупателями 
 - ru/productstar/mockito/service/OrderServiceTest.java - тест класса для объекта сервиса по работе с заказами
 - ru/productstar/mockito/service/WarehouseServiceTest.java - тест класса для объекта сервиса по работе со складами
+- ru/productstar/mockito/service/WarehouseServiceTestNoRealObject.java - Дополнительно тест полностью без реальных объектов мока класса для объекта сервиса по работе со складами
 ## Примечания
-Проект "HomeWorkEnvMockito" был перекопирован изначально из предложенного спикером проекта "mockito_dz" .
-В соответствии с заданием были 
+Проект "HomeWorkEnvMockito" был перекопирован изначально из предложенного спикером проекта "mockito_dz".
+В соответствии с заданием были дописаны классы тестирования:
+- CustomerServiceTest
+- OrderServiceTest
+- WarehouseServiceTest
+Дополнительно сделан класс тестирования
+- WarehouseServiceTestNoRealObject

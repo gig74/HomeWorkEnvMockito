@@ -41,7 +41,9 @@ public class CustomerServiceTest {
 
         // Очерёдность вызовов каждого метода из CustomerRepository
         InOrder inOrder = inOrder(spyCustomerService,spyCustomerRepository);
+        inOrder.verify(spyCustomerService).getOrCreate(anyString());
         inOrder.verify(spyCustomerRepository).getByName(anyString());
+        inOrder.verify(spyCustomerService).getOrCreate(anyString());
         inOrder.verify(spyCustomerRepository).getByName("Oleg"); // - в метод getOrCreate во второй раз была передана строка "Oleg"
         inOrder.verify(spyCustomerRepository).add(any());
 

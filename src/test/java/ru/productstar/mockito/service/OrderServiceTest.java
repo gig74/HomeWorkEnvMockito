@@ -2,6 +2,7 @@ package ru.productstar.mockito.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.productstar.mockito.ProductNotFoundException;
 import ru.productstar.mockito.model.Order;
@@ -44,7 +45,7 @@ public class OrderServiceTest {
         OrderService spyOrderService = spy(new OrderService(spyCustomerService ,spyWarehouseService ,spyOrderRepository ,spyProductRepository ));
 
         Order orderOld = spyOrderService.create("Ivan"); // - создание ордера для существующего клиента
-        Order orderNew = spyOrderService.create("Igor"); // - создание ордера для нового клиента
+        Order orderNew = spyOrderService.create("Igor"); // - создание ордера для нового клиента (с быстрой доставкой)
 
         spyOrderService.addProduct(orderOld, "monitor", 5, false) ; // - добавление существующего товара в достаточном количестве
         spyOrderService.addProduct(orderOld, "phone", 5, false) ; // - добавление существующего товара в достаточном количестве
@@ -67,19 +68,36 @@ public class OrderServiceTest {
         verify(spyOrderRepository, times(2)).create(any()); // - количество вызовов зависимых сервисов
         verify(spyOrderRepository, times(3)).addDelivery(anyInt(),any()); // - количество вызовов зависимых сервисов
         verify(spyProductRepository, times(3)).getByName(anyString()); // - количество вызовов зависимых сервисов
-        //         // Очерёдность вызовов каждого метода из CustomerRepository
-        //        InOrder inOrder = inOrder(spyCustomerService,spyCustomerRepository);
-        //        inOrder.verify(spyCustomerRepository).getByName(anyString());
-        //        inOrder.verify(spyCustomerRepository).getByName("Oleg"); // - в метод getOrCreate во второй раз была передана строка "Oleg"
-        //        inOrder.verify(spyCustomerRepository).add(any());
+        // порядок вызовов зависимых сервисов
+        InOrder inOrder = inOrder(spyOrderService, spyCustomerService, spyWarehouseService, spyOrderRepository, spyProductRepository); //
+        inOrder.verify(spyOrderService).create(anyString());
+        inOrder.verify(spyCustomerService).getOrCreate(anyString());
+        inOrder.verify(spyOrderService).create(anyString());
+        inOrder.verify(spyCustomerService).getOrCreate(anyString());
+        inOrder.verify(spyOrderService).addProduct(any(),anyString(),anyInt(),anyBoolean());
+        inOrder.verify(spyWarehouseService).findWarehouse(anyString(),anyInt());
+        inOrder.verify(spyProductRepository).getByName(anyString());
+        inOrder.verify(spyWarehouseService).getStock(any(),anyString());
+        inOrder.verify(spyOrderRepository).addDelivery(anyInt(),any());
+        inOrder.verify(spyOrderService).addProduct(any(),anyString(),anyInt(),anyBoolean());
+        inOrder.verify(spyWarehouseService).findWarehouse(anyString(),anyInt());
+        inOrder.verify(spyProductRepository).getByName(anyString());
+        inOrder.verify(spyWarehouseService).getStock(any(),anyString());
+        inOrder.verify(spyOrderRepository).addDelivery(anyInt(),any());
+        inOrder.verify(spyOrderService).addProduct(any(),anyString(),anyInt(),anyBoolean());
+        inOrder.verify(spyWarehouseService).findClosestWarehouse(anyString(),anyInt());
+        inOrder.verify(spyProductRepository).getByName(anyString());
+        inOrder.verify(spyWarehouseService).getStock(any(),anyString());
+        inOrder.verify(spyOrderRepository).addDelivery(anyInt(),any());
+        inOrder.verify(spyOrderService).addProduct(any(),anyString(),anyInt(),anyBoolean());
+        inOrder.verify(spyWarehouseService).findWarehouse(anyString(),anyInt());
+        inOrder.verify(spyOrderService).addProduct(any(),anyString(),anyInt(),anyBoolean());
+        inOrder.verify(spyWarehouseService).findWarehouse(anyString(),anyInt());
 
         assertEquals( 3500 , orderOld.getTotal() ); // проверка - общая сумма заказа соответствует ожидаемой
         assertEquals( 200 , orderNew.getTotal() ); // проверка - общая сумма заказа соответствует ожидаемой
 
         assertEquals(InitRepository.getInstance().getWarehouseRepository().getById(2) , orderNew.getDeliveries().get(0).getWarehouse() ); // - проверка "быстрой доставки" с ближайшего склада с id = 2
-
-
-
 
     }
 }
